@@ -3,6 +3,7 @@ const theTest = (sudoku, iteration) => {
     const unsolvedBoard = []
     board.forEach(row => { unsolvedBoard.push([...row]) })
     let howManyAreDifferent = 0
+    debugger
     solve(board)
     console.log('########################################')
     console.log(`  <<<<<<<=== Iteration N': ${iteration} ===>>>>>>>`)
@@ -31,7 +32,6 @@ const theTest = (sudoku, iteration) => {
 
 const test = sudoku => {
     if (Array.isArray(sudoku)) {
-        console.log("IT'S AN ARRAY")
         sudoku.forEach((s, i) => { theTest(s, i) })
         return
     } theTest(sudoku)
