@@ -9,6 +9,7 @@ canvas.height = cellSize * 9
 const solveBtn = document.getElementById('solve')
 
 const calculateIndex = pos => {
+    console.log(pos)
     let x = pos[0] / cellSize | 0
     let y = pos[1] / cellSize | 0
     x = x >= 9 ? 8 : x
@@ -51,62 +52,20 @@ const determineColor = value => {
 }
 
 const selectCell = event => {
-    if (game.cell != null) {
-        game.board[game.cell[1]][game.cell[0]].selected = false
+    if (game.cell) {
+        let [x, y] = game.cell
+        game.board[y][x].selected = false
+        game.cell = null
     }
-    [x, y] = calculateIndex([event.clientX, event.clientY])
-    game.cell = [x, y]
-    console.log(x, y)
-    if (game.board[game.cell[1]][game.cell[0]].canChange) {
+    const [x, y] = calculateIndex([nx, ny])
+    if (game.board[y][x].canChange) {
+        game.cell = [x, y]
         game.board[y][x].selected = true
     }
+
 }
 
-const drawBoard = board => {
-    ctx.font = `${cellSize}px sans serif`
-    for (let y = 0; y < board.length; y++) {
-        for (let x = 0; x < board.length; x++) {
-            ctx.fillStyle = determineColor(game.board[y][x])
-            ctx.fillText(game.board[y][x].value, x * cellSize, cellSize + y * cellSize)
-            ctx.rect(x * cellSize, y * cellSize, cellSize, cellSize)
-            ctx.stroke()
-        }
-    }
-}
-
-const game = {
-    originalBoard: tests[0].board,
-    board: convertBoard(tests[0].board),
-    cell: null,
-    over: false
-}
-
-const draw = () => {
-    clearCanvas()
-    drawBoard(game.board)
-}
-
-let lastTime = 0;
-let deltaTime = 0;
-const update = (time = 0) => {
-    deltaTime = time - lastTime
-    lastTime = time
-
-
-    draw()
-    requestAnimationFrame(update)
-}
-
-solveBtn.addEventListener('click', () => {
-    solve(game.originalBoard)
-    let solvedBoard = copy2dArray(game.originalBoard)
-    solvedBoard = convertBoard(solvedBoard)
-    game.board = solvedBoard
-})
-
-canvas.addEventListener('click', event => selectCell(event))
-
-document.addEventListener('keydown', event => {
+const keyDown = event => {
     const key = parseInt(event.key)
     if (game.cell == null) return
     let pos = game.cell
@@ -126,6 +85,56 @@ document.addEventListener('keydown', event => {
         console.log('game finished')
         game.over = true
     }
+}
+
+const drawSelection = cell => {
+    if (!cell) return
+    const [x, y] = cell
+    ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize)
+}
+
+const drawBoard = board => {
+    ctx.font = `${cellSize}px sans serif`
+    for (let y = 0; y < board.length; y++) {
+        for (let x = 0; x < board.length; x++) {
+            ctx.fillStyle = determineColor(game.board[y][x])
+            ctx.fillText(game.board[y][x].value, x * cellSize, cellSize + y * cellSize)
+        }
+    }
+}
+
+const game = {
+    originalBoard: tests[0].board,
+    board: convertBoard(tests[0].board),
+    cell: null,
+    over: false
+}
+
+const draw = () => {
+    clearCanvas()
+    drawBoard(game.board)
+    drawSelection(game.cell)
+
+}
+
+let lastTime = 0;
+let deltaTime = 0;
+const update = (time = 0) => {
+    deltaTime = time - lastTime
+    lastTime = time
+    draw()
+    window.requestAnimationFrame(update)
+}
+
+solveBtn.addEventListener('click', () => {
+    solve(game.originalBoard)
+    let solvedBoard = copy2dArray(game.originalBoard)
+    solvedBoard = convertBoard(solvedBoard)
+    game.board = solvedBoard
 })
 
-update()
+canvas.addEventListener('click', event => selectCell(event))
+
+document.addEventListener('keydown', event => { keyDown(event) })
+
+window.requestAnimationFrame(update)
