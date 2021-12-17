@@ -9,11 +9,11 @@ canvas.height = cellSize * 9
 const solveBtn = document.getElementById('solve')
 
 const calculateIndex = pos => {
-    console.log(pos)
-    let x = pos[0] / cellSize | 0
-    let y = pos[1] / cellSize | 0
-    x = x >= 9 ? 8 : x
-    y = y >= 9 ? 8 : y
+    const canvasPos = event.target.getBoundingClientRect();
+    const correctedX = pos[0] - canvasPos.x
+    const correctedY = pos[1] - canvasPos.y
+    let x = correctedX / cellSize | 0
+    let y = correctedY / cellSize | 0
     return [x, y]
 }
 
@@ -51,40 +51,29 @@ const determineColor = value => {
     else return '#000'
 }
 
-const selectCell = event => {
-    if (game.cell) {
-        let [x, y] = game.cell
-        game.board[y][x].selected = false
-        game.cell = null
-    }
-    const [x, y] = calculateIndex([nx, ny])
+const select = event => {
+    if (game.cell) game.cell = null
+    const [x, y] = calculateIndex([event.clientX, event.clientY])
+    if (x > 9 || y > 9) return
     if (game.board[y][x].canChange) {
         game.cell = [x, y]
         game.board[y][x].selected = true
     }
-
 }
 
 const keyDown = event => {
-    const key = parseInt(event.key)
-    if (game.cell == null) return
-    let pos = game.cell
-    if (!isNaN(key)) {
-        if (isValidNumber(pos, game.originalBoard, key) &&
-            game.board[pos[1]][pos[0]].canChange) {
-            game.board[pos[1]][pos[0]].value = key
-            game.board[pos[1]][pos[0]].stat = 'success'
-        } else {
-            if (game.board[pos[1]][pos[0]].canChange) {
-                game.board[pos[1]][pos[0]].value = key
-                game.board[pos[1]][pos[0]].stat = 'error'
-            }
-        }
+    if (!game.cell) return
+    if (isNaN(event.key)) return
+
+    const number = parseInt(event.key)
+    const [x, y] = game.cell
+
+    if (isValidNumber([x, y], game.originalBoard, number)) {
+        game.board[y][x].stat = 'success'
+    } else {
+        game.board[y][x].stat = 'error'
     }
-    if (getValidPosition(game.board)) {
-        console.log('game finished')
-        game.over = true
-    }
+    game.board[y][x].value = number
 }
 
 const drawSelection = cell => {
@@ -97,8 +86,10 @@ const drawBoard = board => {
     ctx.font = `${cellSize}px sans serif`
     for (let y = 0; y < board.length; y++) {
         for (let x = 0; x < board.length; x++) {
+
             ctx.fillStyle = determineColor(game.board[y][x])
             ctx.fillText(game.board[y][x].value, x * cellSize, cellSize + y * cellSize)
+
         }
     }
 }
@@ -133,7 +124,7 @@ solveBtn.addEventListener('click', () => {
     game.board = solvedBoard
 })
 
-canvas.addEventListener('click', event => selectCell(event))
+canvas.addEventListener('click', event => select(event))
 
 document.addEventListener('keydown', event => { keyDown(event) })
 
