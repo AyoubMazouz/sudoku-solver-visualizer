@@ -1,4 +1,4 @@
-const theTest = (sudoku, iteration) => {
+const _testBacktrackAlgorithm = (sudoku, iteration) => {
     const [board, solution] = [sudoku.board, sudoku.solution]
     const unsolvedBoard = []
     board.forEach(row => { unsolvedBoard.push([...row]) })
@@ -30,12 +30,28 @@ const theTest = (sudoku, iteration) => {
     console.log(board)
 }
 
-const test = sudoku => {
+const testBacktrackAlgorithm = sudoku => {
     if (Array.isArray(sudoku)) {
-        sudoku.forEach((s, i) => { theTest(s, i) })
+        sudoku.forEach((s, i) => { _testBacktrackAlgorithm(s, i) })
         return
-    } theTest(sudoku)
+    } _testBacktrackAlgorithm(sudoku)
 }
+
+// const a2 = arr => {
+//     return arr.map(function (row) { row.slice() })
+// }
+
+// const a1 = arr => JSON.parse(JSON.stringify(arr))
+
+
+const test2dArrayCopyMethod = arr => {
+    let newArray = po(arr)
+    newArray[0][0] = 'newArray'
+    arr[0][0] = 'oldArray'
+    console.log(newArray, arr)
+}
+
+
 
 const tests = [
     { // @0 Easy
