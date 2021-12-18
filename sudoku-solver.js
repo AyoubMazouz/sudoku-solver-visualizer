@@ -38,16 +38,15 @@ const setCurrentBoard = () => {
 
 const clearCanvas = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = 'yellow'
+    ctx.fillStyle = '#f5f5f5'
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 }
 
 const determineColor = value => {
     if (game.over) return 'orange'
-    if (value.stat === 'success') return 'green'
-    if (value.stat === 'error') return 'red'
-    if (value.selected) return 'blue'
-    if (value.canChange) return 'gray'
+    if (value.stat === 'success') return '#228b22'
+    if (value.stat === 'error') return '#de1738'
+    if (value.canChange) return '#f5f5f5'
     else return '#000'
 }
 
@@ -55,10 +54,7 @@ const select = event => {
     if (game.cell) game.cell = null
     const [x, y] = calculateIndex([event.clientX, event.clientY])
     if (x > 9 || y > 9) return
-    if (game.board[y][x].canChange) {
-        game.cell = [x, y]
-        game.board[y][x].selected = true
-    }
+    if (game.board[y][x].canChange) game.cell = [x, y]
 }
 
 const keyDown = event => {
@@ -76,20 +72,47 @@ const keyDown = event => {
     game.board[y][x].value = number
 }
 
-const drawSelection = cell => {
+const drawSelection = (board, cell) => {
     if (!cell) return
     const [x, y] = cell
-    ctx.strokeRect(x * cellSize, y * cellSize, cellSize, cellSize)
+    const [gridX, gridY] = [(x / 3 | 0) * 3, (y / 3 | 0) * 3]
+    ctx.fillStyle = 'rgba(0, 0, 255, .3)'
+    ctx.fillRect(gridX * cellSize, gridY * cellSize, cellSize * 3, cellSize * 3)
+    for (let i = 0; i < board.length; i++) {
+        ctx.fillRect(x * cellSize, i * cellSize, cellSize, cellSize)
+        ctx.fillRect(i * cellSize, y * cellSize, cellSize, cellSize)
+    }
+}
+
+const drawStaticElements = (board) => {
+    for (let y = 0; y < board.length; y += 1) {
+        for (let x = 0; x < board.length; x += 1) {
+            ctx.strokeStyle = 'rgba(0,0,0,.3)'
+            ctx.lineWidth = 1
+            ctx.strokeRect(ctx.lineWidth + x * cellSize, y * cellSize, cellSize, cellSize)
+        }
+    }
+    for (let y = 0; y < board.length; y += 3) {
+        for (let x = 0; x < board.length; x += 3) {
+            ctx.strokeStyle = 'rgba(0,0,0,1)'
+            ctx.lineWidth = 3
+            ctx.strokeRect(ctx.lineWidth + x * cellSize, y * cellSize, cellSize * 3, cellSize * 3)
+        }
+    }
+
 }
 
 const drawBoard = board => {
     ctx.font = `${cellSize}px sans serif`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
     for (let y = 0; y < board.length; y++) {
         for (let x = 0; x < board.length; x++) {
-
+            const posX = (cellSize / 2) + (x * cellSize)
+            const posY = (cellSize / 2) + (y * cellSize)
+            const text = game.board[y][x].value > 0 ? game.board[y][x].value : ''
             ctx.fillStyle = determineColor(game.board[y][x])
-            ctx.fillText(game.board[y][x].value, x * cellSize, cellSize + y * cellSize)
-
+            ctx.fillText(text, posX, posY)
         }
     }
 }
@@ -103,8 +126,9 @@ const game = {
 
 const draw = () => {
     clearCanvas()
+    drawStaticElements(game.board)
+    drawSelection(game.board, game.cell)
     drawBoard(game.board)
-    drawSelection(game.cell)
 
 }
 
