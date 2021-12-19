@@ -8,6 +8,16 @@ canvas.height = cellSize * 9
 
 const solveBtn = document.getElementById('solve')
 
+const colors = {
+    '': '#45576E',
+    'error': '#E55C6C',
+    'success': '#0072E3',
+    'bg': '#FFFFFF',
+    'sel-pri': '#BBDEFB',
+    'sel-sec': '#E2EBF3',
+    'sel-err': '#F7CFD6',
+}
+
 const calculateIndex = pos => {
     const canvasPos = event.target.getBoundingClientRect();
     const correctedX = pos[0] - canvasPos.x
@@ -26,7 +36,7 @@ const convertBoard = board => {
         return row.map(v => {
             if (isNaN(v)) return v.value
             return {
-                value: v, canChange: v === 0 ? true : false, stat: null, selected: false
+                value: v, canChange: v === 0 ? true : false, stat: '', selected: false
             }
         })
     })
@@ -38,16 +48,8 @@ const setCurrentBoard = () => {
 
 const clearCanvas = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = '#f5f5f5'
+    ctx.fillStyle = colors['bg']
     ctx.fillRect(0, 0, canvas.width, canvas.height)
-}
-
-const determineColor = value => {
-    if (game.over) return 'orange'
-    if (value.stat === 'success') return '#228b22'
-    if (value.stat === 'error') return '#de1738'
-    if (value.canChange) return '#f5f5f5'
-    else return '#000'
 }
 
 const select = event => {
@@ -65,16 +67,32 @@ const keyDown = event => {
 
     const number = parseInt(event.key)
 
+    if (number === 0) {
+        game.board[y][x].stat = ''
+        game.board[y][x].value = number
+        return
+    }
+
     if (isValidNumber([x, y], convertBoard(game.board), number)) {
         game.board[y][x].stat = 'success'
     } else {
         game.board[y][x].stat = 'error'
     }
     game.board[y][x].value = number
+
+    if (getValidPosition(convertBoard(game.board)) === false) {
+        for (let row of game.board) {
+            for (let cell of row) {
+                if (cell.stat === 'error') return
+                if (cell.value === 0) return
+            }
+        }
+        game.over = true
+    }
 }
 
 const drawSameNumberSelection = (board, x, y, j, i) => {
-    ctx.fillStyle = '#BBDEFB'
+    ctx.fillStyle = colors['sel-pri']
     if (board[y][x].value === board[i][j].value && board[y][x].value !== 0) {
         ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize)
     }
@@ -82,11 +100,11 @@ const drawSameNumberSelection = (board, x, y, j, i) => {
 }
 
 const drawHorizontalVerticalSelection = (board, x, y, i) => {
-    ctx.fillStyle = '#E2EBF3'
+    ctx.fillStyle = colors['sel-sec']
     ctx.fillRect(x * cellSize, i * cellSize, cellSize, cellSize)
     ctx.fillRect(i * cellSize, y * cellSize, cellSize, cellSize)
-    if (board[y][x].stat === 'error') {
-        ctx.fillStyle = '#F7CFD6'
+    if (board[y][x].stat === 'error' && board[y][x].value !== 0) {
+        ctx.fillStyle = colors['sel-err']
         if (board[y][x].value === board[y][i].value
             && x !== i) {
             ctx.fillRect(i * cellSize, y * cellSize, cellSize, cellSize)
@@ -101,10 +119,10 @@ const drawHorizontalVerticalSelection = (board, x, y, i) => {
 
 const drawSubGridSelection = (board, x, y, gridX, gridY, j, i) => {
     if ((i >= gridY && i < gridY + 3) && (j >= gridX && j < gridX + 3)) {
-        ctx.fillStyle = '#E2EBF3'
+        ctx.fillStyle = colors['sel-sec']
         ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize)
-        if (board[y][x].stat === 'error') {
-            ctx.fillStyle = '#F7CFD6'
+        if (board[y][x].stat === 'error' && board[y][x].value !== 0) {
+            ctx.fillStyle = colors['sel-err']
             if (board[y][x].value === board[i][j].value
                 && [x, y] !== [j, i]) {
                 ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize)
@@ -115,13 +133,13 @@ const drawSubGridSelection = (board, x, y, gridX, gridY, j, i) => {
 }
 
 const drawCellSelection = (x, y) => {
-    ctx.fillStyle = '#BBDEFB'
+    ctx.fillStyle = colors['sel-pri']
     ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize)
 }
 
 const drawSubGridBorder = i => {
-    ctx.strokeStyle = 'rgba(0,0,0,1)'
-    ctx.lineWidth = 4
+    ctx.strokeStyle = colors['']
+    ctx.lineWidth = 2
     if (i % 3 === 0 && i !== 0) {
         ctx.beginPath();
         ctx.moveTo(i * cellSize, 0);
@@ -133,17 +151,23 @@ const drawSubGridBorder = i => {
     }
 }
 
-const drawCellBorder = (j, i) => {
-    ctx.strokeStyle = 'rgba(0,0,0,.3)'
-    ctx.lineWidth = 1
-    ctx.strokeRect(ctx.lineWidth + j * cellSize, i * cellSize, cellSize, cellSize)
+const drawCellBorder = (i) => {
+    ctx.strokeStyle = 'rgba(100,100,100,.25)'
+    ctx.lineWidth = .75
+    ctx.beginPath();
+    ctx.moveTo(i * cellSize, 0);
+    ctx.lineTo(i * cellSize, canvas.height);
+    ctx.moveTo(0, i * cellSize);
+    ctx.lineTo(canvas.width, i * cellSize);
+    ctx.closePath();
+    ctx.stroke()
 }
 
 const drawNumbers = (board, j, i) => {
     ctx.font = `${cellSize}px sans serif`
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
-    ctx.fillStyle = '#000'
+    ctx.fillStyle = colors[board[i][j].stat]
     const posX = (cellSize / 2) + (j * cellSize)
     const posY = (cellSize / 2) + (i * cellSize)
     const text = board[i][j].value > 0 ? board[i][j].value : ''
@@ -151,8 +175,8 @@ const drawNumbers = (board, j, i) => {
 }
 
 const game = {
-    originalBoard: tests[0].board,
-    board: convertBoard(tests[0].board),
+    originalBoard: bb1,
+    board: convertBoard(bb1),
     cell: null,
     over: false
 }
@@ -173,10 +197,9 @@ const draw = game => {
     }
     for (let i = 0; i < game.board.length; i++) {
         for (let j = 0; j < game.board.length; j++) {
-            drawNumbers(game.board, i, j)
-            drawCellBorder(j, i)
-
+            drawNumbers(game.board, j, i)
         }
+        drawCellBorder(i)
         drawSubGridBorder(i)
     }
 }
