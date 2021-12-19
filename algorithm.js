@@ -1,7 +1,7 @@
 const getValidPosition = board => {
     for (let y = 0; y < board.length; y++) {
         for (let x = 0; x < board.length; x++) {
-            if (board[y][x] === 0) return [x, y]
+            if (board[y][x].value === 0) return [x, y]
         }
     } return false
 }
@@ -10,13 +10,13 @@ const isValidNumber = (pos, board, number) => {
     const [x, y] = pos
     // Check in all columns except at y & x
     for (let i = 0; i < board.length - 1; i++) {
-        if (board[i][x] === number && y !== i) {
+        if (board[i][x].value === number && y !== i) {
             return false
         }
     }
     // Check in all rows except at y & x
     for (let i = 0; i < board.length; i++) {
-        if (board[y][i] === number && x !== i) {
+        if (board[y][i].value === number && x !== i) {
             return false
         }
     }
@@ -33,7 +33,7 @@ const isValidNumber = (pos, board, number) => {
     return true
 }
 
-const solve = board => {
+async function solve(board) {
     const pos = getValidPosition(board)
 
     if (!pos) return true
@@ -48,6 +48,11 @@ const solve = board => {
             if (solve(board)) return true
 
             board[y][x] = 0
+        }
+        for (let i = 0; i < game.board.length; i++) {
+            for (let j = 0; j < game.board.length; j++) {
+                drawNumbers(game.board, j, i)
+            }
         }
     } return false
 }
