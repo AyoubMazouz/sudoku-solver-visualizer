@@ -73,49 +73,44 @@ const keyDown = event => {
     game.board[y][x].value = number
 }
 
-const drawSameNumberSelection = (board, x, y) => {
-    for (let i = 0; i < board.length; i++) {
-        for (let j = 0; j < board.length; j++) {
-            ctx.fillStyle = '#BBDEFB'
-            if (board[y][x].value === board[i][j].value && board[y][x].value !== 0) {
+const drawSameNumberSelection = (board, x, y, j, i) => {
+    ctx.fillStyle = '#BBDEFB'
+    if (board[y][x].value === board[i][j].value && board[y][x].value !== 0) {
+        ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize)
+    }
+
+}
+
+const drawHorizontalVerticalSelection = (board, x, y, i) => {
+    ctx.fillStyle = '#E2EBF3'
+    ctx.fillRect(x * cellSize, i * cellSize, cellSize, cellSize)
+    ctx.fillRect(i * cellSize, y * cellSize, cellSize, cellSize)
+    if (board[y][x].stat === 'error') {
+        ctx.fillStyle = '#F7CFD6'
+        if (board[y][x].value === board[y][i].value
+            && x !== i) {
+            ctx.fillRect(i * cellSize, y * cellSize, cellSize, cellSize)
+        }
+        if (board[y][x].value === board[i][x].value
+            && y !== i) {
+            ctx.fillRect(x * cellSize, i * cellSize, cellSize, cellSize)
+        }
+    }
+
+}
+
+const drawSubGridSelection = (board, x, y, gridX, gridY, j, i) => {
+    if ((i >= gridY && i < gridY + 3) && (j >= gridX && j < gridX + 3)) {
+        ctx.fillStyle = '#E2EBF3'
+        ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize)
+        if (board[y][x].stat === 'error') {
+            ctx.fillStyle = '#F7CFD6'
+            if (board[y][x].value === board[i][j].value
+                && [x, y] !== [j, i]) {
                 ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize)
             }
         }
-    }
-}
 
-const drawHorizontalVerticalSelection = (board, x, y) => {
-    for (let i = 0; i < board.length; i++) {
-        ctx.fillStyle = '#E2EBF3'
-        ctx.fillRect(x * cellSize, i * cellSize, cellSize, cellSize)
-        ctx.fillRect(i * cellSize, y * cellSize, cellSize, cellSize)
-        if (board[y][x].stat === 'error') {
-            ctx.fillStyle = '#F7CFD6'
-            if (board[y][x].value === board[y][i].value
-                && x !== i) {
-                ctx.fillRect(i * cellSize, y * cellSize, cellSize, cellSize)
-            }
-            if (board[y][x].value === board[i][x].value
-                && y !== i) {
-                ctx.fillRect(x * cellSize, i * cellSize, cellSize, cellSize)
-            }
-        }
-    }
-}
-
-const drawSubGridSelection = (board, x, y, gridX, gridY) => {
-    for (let i = gridY; i < gridY + 3; i++) {
-        for (let j = gridX; j < gridX + 3; j++) {
-            ctx.fillStyle = '#E2EBF3'
-            ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize)
-            if (board[y][x].stat === 'error') {
-                ctx.fillStyle = '#F7CFD6'
-                if (board[y][x].value === board[i][j].value
-                    && [x, y] !== [j, i]) {
-                    ctx.fillRect(j * cellSize, i * cellSize, cellSize, cellSize)
-                }
-            }
-        }
     }
 }
 
@@ -124,41 +119,35 @@ const drawCellSelection = (x, y) => {
     ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize)
 }
 
-const drawSubGridBorder = board => {
-    for (let y = 0; y < board.length; y += 3) {
-        for (let x = 0; x < board.length; x += 3) {
-            ctx.strokeStyle = 'rgba(0,0,0,1)'
-            ctx.lineWidth = 3
-            ctx.strokeRect(ctx.lineWidth + x * cellSize, y * cellSize, cellSize * 3, cellSize * 3)
-        }
-    }
-
-}
-
-const drawCellBorder = board => {
-    for (let y = 0; y < board.length; y++) {
-        for (let x = 0; x < board.length; x++) {
-            ctx.strokeStyle = 'rgba(0,0,0,.3)'
-            ctx.lineWidth = 1
-            ctx.strokeRect(ctx.lineWidth + x * cellSize, y * cellSize, cellSize, cellSize)
-        }
+const drawSubGridBorder = i => {
+    ctx.strokeStyle = 'rgba(0,0,0,1)'
+    ctx.lineWidth = 4
+    if (i % 3 === 0 && i !== 0) {
+        ctx.beginPath();
+        ctx.moveTo(i * cellSize, 0);
+        ctx.lineTo(i * cellSize, canvas.height);
+        ctx.moveTo(0, i * cellSize);
+        ctx.lineTo(canvas.width, i * cellSize);
+        ctx.closePath();
+        ctx.stroke()
     }
 }
 
-const drawNumbers = board => {
+const drawCellBorder = (j, i) => {
+    ctx.strokeStyle = 'rgba(0,0,0,.3)'
+    ctx.lineWidth = 1
+    ctx.strokeRect(ctx.lineWidth + j * cellSize, i * cellSize, cellSize, cellSize)
+}
+
+const drawNumbers = (board, j, i) => {
     ctx.font = `${cellSize}px sans serif`
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillStyle = '#000'
-    for (let y = 0; y < board.length; y++) {
-        for (let x = 0; x < board.length; x++) {
-            const posX = (cellSize / 2) + (x * cellSize)
-            const posY = (cellSize / 2) + (y * cellSize)
-            const text = game.board[y][x].value > 0 ? game.board[y][x].value : ''
-            ctx.fillStyle =
-                ctx.fillText(text, posX, posY)
-        }
-    }
+    const posX = (cellSize / 2) + (j * cellSize)
+    const posY = (cellSize / 2) + (i * cellSize)
+    const text = board[i][j].value > 0 ? board[i][j].value : ''
+    ctx.fillText(text, posX, posY)
 }
 
 const game = {
@@ -169,21 +158,27 @@ const game = {
 }
 
 const draw = game => {
-    const board = game.board
-
     clearCanvas()
     if (game.cell) {
         const [x, y] = game.cell
         const [gridX, gridY] = [(x / 3 | 0) * 3, (y / 3 | 0) * 3]
-        drawSameNumberSelection(board, x, y)
-        drawHorizontalVerticalSelection(board, x, y)
-        drawSubGridSelection(board, x, y, gridX, gridY)
+        for (let i = 0; i < game.board.length; i++) {
+            for (let j = 0; j < game.board.length; j++) {
+                drawHorizontalVerticalSelection(game.board, x, y, i)
+                drawSameNumberSelection(game.board, x, y, j, i)
+                drawSubGridSelection(game.board, x, y, gridX, gridY, j, i)
+            }
+        }
         drawCellSelection(x, y)
     }
-    drawNumbers(board)
-    drawCellBorder(board)
+    for (let i = 0; i < game.board.length; i++) {
+        for (let j = 0; j < game.board.length; j++) {
+            drawNumbers(game.board, i, j)
+            drawCellBorder(j, i)
 
-    drawSubGridBorder(board)
+        }
+        drawSubGridBorder(i)
+    }
 }
 
 
