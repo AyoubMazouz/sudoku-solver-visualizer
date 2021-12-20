@@ -5,19 +5,22 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sudoku Solver</title>
-    <script defer src="algorithm.js"></script>
-    <script defer src="test.js"></script>
-    <script defer src="sudoku-solver.js"></script>
+    <link rel="stylesheet" href="src/styles.css">
+    <script defer src="./src/algorithm.js"></script>
+    <script defer src="./src/test.js"></script>
+    <script defer src="./src/sudoku-solver.js"></script>
 </head>
 
-<body style="display: flex; align-items: center; justify-content: center;">
+<body>
 
-    <div>
-        <canvas id="canvas" style="border: 2px solid #45576E;"></canvas>
+    <div class="game-container">
+        <canvas id="sudoku"></canvas>
 
-        <div id="btns">
-            <button id="solve">Solve</button>
-            <button id="reset">Reset</button>
+        <div id="btns-container">
+            <p id="timer">00:00</p>
+            <button id="stop-timer">st</button>
+            <button id="solve">S</button>
+            <button id="reset">R</button>
             <button data-number="0">0</button>
             <button data-number="1">1</button>
             <button data-number="2">2</button>
@@ -29,6 +32,7 @@
             <button data-number="8">8</button>
             <button data-number="9">9</button>
         </div>
+    </div>
 
     </div>
 </body>

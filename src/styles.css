@@ -1,0 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1+Code:wght@300;500&family=Montserrat:wght@300;400&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  font-family: 'Montserrat';
+}
+
+body {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.game-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 1rem;
+}
+
+#sudoku {
+  border: solid 2px #45576E;
+}
+
+#btns-container {
+  height: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: .5rem;
+}
+
+#btns-container button {
+  background: hsl(212, 46%, 93%);
+  color: #0072E3;
+  font-weight: 500;
+  font-size: xx-large;
+  border: none;
+  border-radius: .25rem;
+  transition: background .3s ease-in-out;
+}
+#btns-container button:hover {
+  background: hsl(214, 38%, 89%);
+}
+#timer {
+  grid-column: span 2;  
+  align-self: center;
+  justify-self: center;
+  color: #97A7BC;
+  font-size: xx-large;
+}

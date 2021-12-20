@@ -1,7 +1,7 @@
-const canvas = document.getElementById('canvas')
+const canvas = document.getElementById('sudoku')
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d')
-const btns = document.getElementById('btns')
+const btns = document.getElementById('btns-container')
 
 const cellSize = 50
 canvas.width = cellSize * 9
@@ -170,7 +170,7 @@ const drawCellBorder = (i) => {
 }
 
 const drawNumbers = (board, j, i) => {
-    ctx.font = `${cellSize}px sans serif`
+    ctx.font = `${cellSize}px montserrat`
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillStyle = colors[board[i][j].stat]
