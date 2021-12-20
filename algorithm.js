@@ -25,7 +25,7 @@ const isValidNumber = (pos, board, number) => {
     const gridX = (x / 3 | 0) * 3
     for (let i = gridY; i < gridY + 3; i++) {
         for (let j = gridX; j < gridX + 3; j++) {
-            if (board[i][j] === number && [y, x] !== [i, j]) {
+            if (board[i][j].value === number && [y, x] !== [i, j]) {
                 return false
             }
         }
@@ -33,7 +33,7 @@ const isValidNumber = (pos, board, number) => {
     return true
 }
 
-async function solve(board) {
+function solve(board) {
     const pos = getValidPosition(board)
 
     if (!pos) return true
@@ -42,17 +42,11 @@ async function solve(board) {
 
     for (let n = 0; n < 10; n++) {
         if (isValidNumber(pos, board, n)) {
-
-            board[y][x] = n
+            board[y][x].value = n
 
             if (solve(board)) return true
 
-            board[y][x] = 0
-        }
-        for (let i = 0; i < game.board.length; i++) {
-            for (let j = 0; j < game.board.length; j++) {
-                drawNumbers(game.board, j, i)
-            }
+            board[y][x].value = 0
         }
     } return false
 }

@@ -1,12 +1,12 @@
 const canvas = document.getElementById('canvas')
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d')
+const btns = document.getElementById('btns')
 
 const cellSize = 50
 canvas.width = cellSize * 9
 canvas.height = cellSize * 9
 
-const solveBtn = document.getElementById('solve')
 
 const colors = {
     '': '#45576E',
@@ -52,20 +52,22 @@ const clearCanvas = () => {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 }
 
-const select = event => {
+const select = (event, game) => {
     if (game.cell) game.cell = null
     const [x, y] = calculateIndex([event.clientX, event.clientY])
-    if (x > 9 || y > 9) return
+    if (x >= 9 || y >= 9) return
     game.cell = [x, y]
 }
 
-const keyDown = event => {
+const keyDown = (event, game) => {
+    debugger
     if (!game.cell) return
-    if (isNaN(event.key)) return
+    const value = event instanceof Object ? event.key : event
+    if (isNaN(value)) return
+    const number = parseInt(value)
     const [x, y] = game.cell
     if (!game.board[y][x].canChange) return
 
-    const number = parseInt(event.key)
 
     if (number === 0) {
         game.board[y][x].stat = ''
@@ -73,14 +75,14 @@ const keyDown = event => {
         return
     }
 
-    if (isValidNumber([x, y], convertBoard(game.board), number)) {
+    if (isValidNumber([x, y], game.board, number)) {
         game.board[y][x].stat = 'success'
     } else {
         game.board[y][x].stat = 'error'
     }
     game.board[y][x].value = number
 
-    if (getValidPosition(convertBoard(game.board)) === false) {
+    if (getValidPosition(game.board) === false) {
         for (let row of game.board) {
             for (let cell of row) {
                 if (cell.stat === 'error') return
@@ -89,6 +91,10 @@ const keyDown = event => {
         }
         game.over = true
     }
+}
+
+const reset = game => {
+    game.board = convertBoard(ss1)
 }
 
 const drawSameNumberSelection = (board, x, y, j, i) => {
@@ -174,13 +180,6 @@ const drawNumbers = (board, j, i) => {
     ctx.fillText(text, posX, posY)
 }
 
-const game = {
-    originalBoard: bb1,
-    board: convertBoard(bb1),
-    cell: null,
-    over: false
-}
-
 const draw = game => {
     clearCanvas()
     if (game.cell) {
@@ -204,9 +203,14 @@ const draw = game => {
     }
 }
 
+const game = {
+    originalBoard: ss1,
+    board: convertBoard(ss1),
+    cell: null,
+    over: false
+}
 
-let lastTime = 0;
-let deltaTime = 0;
+let lastTime, deltaTime = 0;
 const update = (time = 0) => {
     deltaTime = time - lastTime
     lastTime = time
@@ -214,15 +218,15 @@ const update = (time = 0) => {
     window.requestAnimationFrame(update)
 }
 
-solveBtn.addEventListener('click', () => {
-    solve(game.originalBoard)
-    let solvedBoard = copy2dArray(game.originalBoard)
-    solvedBoard = convertBoard(solvedBoard)
-    game.board = solvedBoard
+
+canvas.addEventListener('click', event => select(event, game))
+document.addEventListener('keydown', event => keyDown(event, game))
+btns.addEventListener('click', event => {
+    if (event.target !== event.currentTarget) {
+        if (event.target.id === 'solve') solve(game.board)
+        if (event.target.id === 'reset') reset(game)
+        keyDown(event.target.dataset.number, game)
+    }
 })
-
-canvas.addEventListener('click', event => select(event))
-
-document.addEventListener('keydown', event => { keyDown(event) })
 
 window.requestAnimationFrame(update)
