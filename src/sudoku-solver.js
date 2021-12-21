@@ -3,6 +3,7 @@ const canvas = document.getElementById('sudoku')
 const ctx = canvas.getContext('2d')
 const btns = document.getElementById('btns-container')
 const dropDown = document.getElementById('drop-down')
+const stopTimer = document.getElementById('stop-timer')
 const timer = document.getElementById('timer')
 
 const cellSize = 50
@@ -44,8 +45,16 @@ const convertBoard = board => {
     })
 }
 
-const setCurrentBoard = () => {
-    return createBoard(tests[0].board)
+const toggleTimer = (game, event) => {
+    game.timerIsPaused = !game.timerIsPaused
+    let span = event.currentTarget.querySelector('span')
+    if (game.timerIsPaused) {
+        span.classList.remove('icon-pause')
+        span.classList.add('icon-play')
+    } else {
+        span.classList.remove('icon-play')
+        span.classList.add('icon-pause')
+    }
 }
 
 const updateTimer = time => {
@@ -69,7 +78,6 @@ const select = (event, game) => {
 }
 
 const keyDown = (event, game) => {
-    debugger
     if (!game.cell) return
     const value = event instanceof Object ? event.key : event
     if (isNaN(value)) return
@@ -243,18 +251,16 @@ const update = (time = 0) => {
 
 canvas.addEventListener('click', event => select(event, game))
 document.addEventListener('keydown', event => keyDown(event, game))
+stopTimer.addEventListener('click', event => toggleTimer(game, event))
+dropDown.addEventListener('input', () => reset(game))
 btns.addEventListener('click', event => {
     if (event.target !== event.currentTarget) {
         if (event.target.id === 'solve') solve(game.board)
         if (event.target.id === 'reset') reset(game)
-        if (event.target.id === 'stop-timer') {
-            game.timerIsPaused = !game.timerIsPaused
-        }
         keyDown(event.target.dataset.number, game)
     }
 })
 
-dropDown.addEventListener('input', event => reset(game))
 
 reset(game)
 window.requestAnimationFrame(update)
