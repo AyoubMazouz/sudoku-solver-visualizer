@@ -14,8 +14,30 @@
 
 body {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-around;
+  padding: 4rem 0rem;
+}
+
+.heading {
+  color: var(--primary);
+  align-self: start;
+  grid-column: span 2;
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+}
+
+#content-container {
+  grid-column: span 2;
+}
+
+.control-list li {
+  margin: 1rem;
+}
+.control-list li span {
+  font-weight: 500;
+  color: var(--primary);
 }
 
 #container {
@@ -121,81 +143,10 @@ body {
   }
 }
 
-/* Icons */
-/* Pause Icon */
-.icon-pause {
-  box-sizing: border-box;
-  position: relative;
-  display: block;
-  transform: scale(2);
-  width: 8px;
-  height: 10px;
-  border-left: 3px solid;
-  border-right: 3px solid
+.backspace-icon {
+  height: 2.5rem;
+  width: 2.5rem;
 }
-/* Play Icon */
-.icon-play {
-  box-sizing: border-box;
-  position: relative;
-  display: block;
-  transform: scale(2);
-  width: 22px;
-  height: 22px
-}
-.icon-play::before {
-  content: "";
-  display: block;
-  box-sizing: border-box;
-  position: absolute;
-  width: 0;
-  height: 10px;
-  border-top: 5px solid transparent;
-  border-bottom: 5px solid transparent;
-  border-left: 6px solid;
-  top: 6px;
-  left: 9px
-}
-/* BackSpace Icon */
-.icon-backspace {
-  box-sizing: border-box;
-  position: relative;
-  display: block;
-  width: 14px;
-  height: 14px;
-  transform: scale(2);
-  border: 2px solid;
-  border-left: 0;
-  border-top-right-radius: 2px;
-  border-bottom-right-radius: 2px
-}
-.icon-backspace::after,
-.icon-backspace::before {
-  content: "";
-  display: block;
-  box-sizing: border-box;
-  position: absolute
-}
-.icon-backspace::before {
-  background:
-      linear-gradient( to left,
-      currentColor 18px,transparent 0)
-      no-repeat center center/10px 2px;
-  border-right: 3px solid transparent;
-  box-shadow: inset 0 0 0 2px;
-  right: 2px;
-  bottom: 1px;
-  width: 8px;
-  height: 8px;
-  border-left: 3px solid transparent;
-  transform: rotate(45deg)
-}
-.icon-backspace::after {
-  width: 10px;
-  height: 10px;
-  border-top: 2px solid;
-  border-left: 2px solid;
-  border-top-left-radius: 1px;
-  transform: rotate(-45deg);
-  top: 0;
-  left: -5px
+.hidden {
+  display: none;
 }

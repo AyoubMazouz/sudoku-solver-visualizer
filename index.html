@@ -13,7 +13,10 @@
 
 <body>
 
+
     <div id="container">
+
+        <h1 class="heading">Sudoku Solver Visualizer</h1>
 
         <select id="drop-down">
             <option value="easy" selected>
@@ -33,7 +36,18 @@
         <div id="timer-container">
             <p id="timer">00:00</p>
             <button class="speed-btn" id="stop-timer">
-                <span class="icon-pause"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="play-icon hidden" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="pause-icon" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
             </button>
         </div>
 
@@ -49,7 +63,11 @@
             </div>
             <button class="num-btn" id="reset">Reset</button>
             <button class="num-btn" data-number="0" id="zero">
-                <span class="icon-backspace"></span>
+                <svg xmlns="http://www.w3.org/2000/svg" class="backspace-icon" fill="none" viewBox="0 0 24 24"
+                    stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2M3 12l6.414 6.414a2 2 0 001.414.586H19a2 2 0 002-2V7a2 2 0 00-2-2h-8.172a2 2 0 00-1.414.586L3 12z" />
+                </svg>
             </button>
             <button class="num-btn" data-number="1">1</button>
             <button class="num-btn" data-number="2">2</button>
@@ -63,10 +81,36 @@
 
         </div>
 
+        <div id="content-container">
+            <h2 class="heading">Controls:</h2>
+            <ul class="control-list">
+                <li>
+                    Use your mouse to select the a cell, then use the built-in number pad or the number pad on your
+                    keyboard
+                    <span>("1", "2", "3"..., "9")</span>.
+                </li>
+                <li>
+                    Use the backspace button or <span>"0"</span> on your keyboard to delete a cell.
+                </li>
+                <li>
+                    The drop-down menu above the board alow you to select different difficulty levels.
+                </li>
+                <li>
+                    The <span>"Reset"</span> button clear the board for a new game.
+                </li>
+                <li>
+                    <span>Solve</span> button will run a backtrack algorithm that will solve the current board.
+                </li>
+                <li>
+                    <span>("x1", "x2", "x3")</span> by selecting one of them you can control the visualization speed
+                    default:
+                    <span>"x1"</span>.
+                </li>
+            </ul>
+        </div>
     </div>
 
 
-    </div>
 </body>
 
 </html>

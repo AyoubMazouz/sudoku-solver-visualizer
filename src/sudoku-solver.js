@@ -47,14 +47,10 @@ const convertBoard = board => {
 
 const toggleTimer = (game, event) => {
     game.timerIsPaused = !game.timerIsPaused
-    let span = event.currentTarget.querySelector('span')
-    if (game.timerIsPaused) {
-        span.classList.remove('icon-pause')
-        span.classList.add('icon-play')
-    } else {
-        span.classList.remove('icon-play')
-        span.classList.add('icon-pause')
-    }
+    const playIcon = event.currentTarget.querySelector('.play-icon')
+    const pauseIcon = event.currentTarget.querySelector('.pause-icon')
+    playIcon.classList.toggle('hidden')
+    pauseIcon.classList.toggle('hidden')
 }
 
 const updateTimer = time => {
