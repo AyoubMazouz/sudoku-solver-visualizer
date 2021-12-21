@@ -2,6 +2,7 @@ const canvas = document.getElementById('sudoku')
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d')
 const btns = document.getElementById('btns-container')
+const difficulty = document.getElementById('difficulty')
 const timer = document.getElementById('timer')
 
 const cellSize = 50
@@ -49,8 +50,8 @@ const setCurrentBoard = () => {
 
 const updateTimer = time => {
     const t = new Date(time)
-    let min = t.getMinutes() < 9 ? `0${t.getMinutes()}` : `${t.getMinutes()}`
-    let sec = t.getSeconds() < 9 ? `0${t.getSeconds()}` : `${t.getSeconds()}`
+    let min = t.getMinutes() <= 9 ? `0${t.getMinutes()}` : `${t.getMinutes()}`
+    let sec = t.getSeconds() <= 9 ? `0${t.getSeconds()}` : `${t.getSeconds()}`
     timer.innerText = `${min}:${sec}`
 }
 
@@ -102,7 +103,10 @@ const keyDown = (event, game) => {
 }
 
 const reset = game => {
-    game.board = convertBoard(ss1)
+    let r = Math.random() * 3 | 0
+    game.originalBoard = boards[difficulty.value][r]
+    game.board = convertBoard(boards[difficulty.value][r])
+    game.time = 0
 }
 
 const drawSameNumberSelection = (board, x, y, j, i) => {
@@ -213,12 +217,13 @@ const draw = game => {
 }
 
 const game = {
-    originalBoard: ss1,
-    board: convertBoard(ss1),
+    originalBoard: null,
+    board: null,
     cell: null,
     over: false,
     time: 0,
     timerIsPaused: false,
+    difficulty: difficulty.value
 }
 
 let lastTime = 0
@@ -229,7 +234,6 @@ const update = (time = 0) => {
 
     if (!game.timerIsPaused) {
         game.time += deltaTime
-        console.log(game.time)
     }
 
     draw(game)
@@ -250,4 +254,7 @@ btns.addEventListener('click', event => {
     }
 })
 
+difficulty.addEventListener('input', event => reset(game))
+
+reset(game)
 window.requestAnimationFrame(update)

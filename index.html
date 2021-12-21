@@ -7,30 +7,38 @@
     <title>Sudoku Solver</title>
     <link rel="stylesheet" href="src/styles.css">
     <script defer src="./src/algorithm.js"></script>
-    <script defer src="./src/test.js"></script>
+    <script defer src="./src/sudoku-boards.js"></script>
     <script defer src="./src/sudoku-solver.js"></script>
 </head>
 
 <body>
 
-    <div class="game-container">
-        <canvas id="sudoku"></canvas>
+    <div>
+        <select id="difficulty">
+            <option value="easy" selected>Easy</option>
+            <option value="normal">Normal</option>
+            <option value="challenging">Challenging</option>
+            <option value="hard">Hard</option>
+        </select>
+        <div class="game-container">
+            <canvas id="sudoku"></canvas>
 
-        <div id="btns-container">
-            <p id="timer">00:00</p>
-            <button id="stop-timer">st</button>
-            <button id="solve">S</button>
-            <button id="reset">R</button>
-            <button data-number="0">0</button>
-            <button data-number="1">1</button>
-            <button data-number="2">2</button>
-            <button data-number="3">3</button>
-            <button data-number="4">4</button>
-            <button data-number="5">5</button>
-            <button data-number="6">6</button>
-            <button data-number="7">7</button>
-            <button data-number="8">8</button>
-            <button data-number="9">9</button>
+            <div id="btns-container">
+                <p id="timer">00:00</p>
+                <button id="stop-timer">st</button>
+                <button id="solve">S</button>
+                <button id="reset">R</button>
+                <button data-number="0">0</button>
+                <button data-number="1">1</button>
+                <button data-number="2">2</button>
+                <button data-number="3">3</button>
+                <button data-number="4">4</button>
+                <button data-number="5">5</button>
+                <button data-number="6">6</button>
+                <button data-number="7">7</button>
+                <button data-number="8">8</button>
+                <button data-number="9">9</button>
+            </div>
         </div>
     </div>
 
