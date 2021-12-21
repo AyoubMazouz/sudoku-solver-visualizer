@@ -13,33 +13,50 @@
 
 <body>
 
-    <div>
-        <select id="difficulty">
-            <option value="easy" selected>Easy</option>
-            <option value="normal">Normal</option>
-            <option value="challenging">Challenging</option>
-            <option value="hard">Hard</option>
+    <div id="container">
+        <select id="drop-down">
+            <option value="easy" selected>
+                Easy
+            </option>
+            <option value="normal">
+                Normal
+            </option>
+            <option value="challenging">
+                Challenging
+            </option>
+            <option value="hard">
+                Hard
+            </option>
         </select>
-        <div class="game-container">
-            <canvas id="sudoku"></canvas>
-
-            <div id="btns-container">
-                <p id="timer">00:00</p>
-                <button id="stop-timer">st</button>
-                <button id="solve">S</button>
-                <button id="reset">R</button>
-                <button data-number="0">0</button>
-                <button data-number="1">1</button>
-                <button data-number="2">2</button>
-                <button data-number="3">3</button>
-                <button data-number="4">4</button>
-                <button data-number="5">5</button>
-                <button data-number="6">6</button>
-                <button data-number="7">7</button>
-                <button data-number="8">8</button>
-                <button data-number="9">9</button>
-            </div>
+        <div id="timer-container">
+            <p id="timer">00:00</p>
+            <button class="speed-btn" id="stop-timer">
+                <span class="icon-play"></span>
+            </button>
         </div>
+        <canvas id="sudoku"></canvas>
+        <div id="btns-container">
+            <button class="num-btn" id="solve">Solve</button>
+            <div id="speed-container">
+                <button class="speed-btn" data-number="0">x1</button>
+                <button class="speed-btn" data-number="1">x2</button>
+                <button class="speed-btn" data-number="2">x3</button>
+            </div>
+            <button class="num-btn" id="reset">Reset</button>
+            <button class="num-btn" data-number="0" id="zero">
+                <span class="icon-backspace"></span>
+            </button>
+            <button class="num-btn" data-number="1">1</button>
+            <button class="num-btn" data-number="2">2</button>
+            <button class="num-btn" data-number="3">3</button>
+            <button class="num-btn" data-number="4">4</button>
+            <button class="num-btn" data-number="5">5</button>
+            <button class="num-btn" data-number="6">6</button>
+            <button class="num-btn" data-number="7">7</button>
+            <button class="num-btn" data-number="8">8</button>
+            <button class="num-btn" data-number="9">9</button>
+        </div>
+    </div>
     </div>
 
     </div>

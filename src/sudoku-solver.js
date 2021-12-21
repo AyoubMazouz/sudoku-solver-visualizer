@@ -2,7 +2,7 @@ const canvas = document.getElementById('sudoku')
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d')
 const btns = document.getElementById('btns-container')
-const difficulty = document.getElementById('difficulty')
+const dropDown = document.getElementById('drop-down')
 const timer = document.getElementById('timer')
 
 const cellSize = 50
@@ -104,8 +104,8 @@ const keyDown = (event, game) => {
 
 const reset = game => {
     let r = Math.random() * 3 | 0
-    game.originalBoard = boards[difficulty.value][r]
-    game.board = convertBoard(boards[difficulty.value][r])
+    game.originalBoard = boards[dropDown.value][r]
+    game.board = convertBoard(boards[dropDown.value][r])
     game.time = 0
 }
 
@@ -223,7 +223,7 @@ const game = {
     over: false,
     time: 0,
     timerIsPaused: false,
-    difficulty: difficulty.value
+    difficulty: dropDown.value
 }
 
 let lastTime = 0
@@ -254,7 +254,7 @@ btns.addEventListener('click', event => {
     }
 })
 
-difficulty.addEventListener('input', event => reset(game))
+dropDown.addEventListener('input', event => reset(game))
 
 reset(game)
 window.requestAnimationFrame(update)
