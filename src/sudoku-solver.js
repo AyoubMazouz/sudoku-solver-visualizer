@@ -2,6 +2,7 @@ const canvas = document.getElementById('sudoku')
 /** @type {CanvasRenderingContext2D} */
 const ctx = canvas.getContext('2d')
 const btns = document.getElementById('btns-container')
+const timer = document.getElementById('timer')
 
 const cellSize = 50
 canvas.width = cellSize * 9
@@ -44,6 +45,13 @@ const convertBoard = board => {
 
 const setCurrentBoard = () => {
     return createBoard(tests[0].board)
+}
+
+const updateTimer = time => {
+    const t = new Date(time)
+    let min = t.getMinutes() < 9 ? `0${t.getMinutes()}` : `${t.getMinutes()}`
+    let sec = t.getSeconds() < 9 ? `0${t.getSeconds()}` : `${t.getSeconds()}`
+    timer.innerText = `${min}:${sec}`
 }
 
 const clearCanvas = () => {
@@ -182,6 +190,7 @@ const drawNumbers = (board, j, i) => {
 
 const draw = game => {
     clearCanvas()
+    updateTimer(game.time)
     if (game.cell) {
         const [x, y] = game.cell
         const [gridX, gridY] = [(x / 3 | 0) * 3, (y / 3 | 0) * 3]
@@ -207,13 +216,22 @@ const game = {
     originalBoard: ss1,
     board: convertBoard(ss1),
     cell: null,
-    over: false
+    over: false,
+    time: 0,
+    timerIsPaused: false,
 }
 
-let lastTime, deltaTime = 0;
+let lastTime = 0
+let deltaTime = 0;
 const update = (time = 0) => {
     deltaTime = time - lastTime
     lastTime = time
+
+    if (!game.timerIsPaused) {
+        game.time += deltaTime
+        console.log(game.time)
+    }
+
     draw(game)
     window.requestAnimationFrame(update)
 }
@@ -225,6 +243,9 @@ btns.addEventListener('click', event => {
     if (event.target !== event.currentTarget) {
         if (event.target.id === 'solve') solve(game.board)
         if (event.target.id === 'reset') reset(game)
+        if (event.target.id === 'stop-timer') {
+            game.timerIsPaused = !game.timerIsPaused
+        }
         keyDown(event.target.dataset.number, game)
     }
 })
