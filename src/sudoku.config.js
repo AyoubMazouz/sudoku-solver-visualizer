@@ -1,9 +1,6 @@
-export const cellSize = 50
-canvas.width = cellSize * 9
-canvas.height = cellSize * 9
+const cellSize = 50
 
-
-export const colors = {
+const colors = {
     '': '#45576E',
     'error': '#E55C6C',
     'success': '#0072E3',

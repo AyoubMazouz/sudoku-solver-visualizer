@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sudoku Solver</title>
     <link rel="stylesheet" href="src/styles.css">
+    <script defer src="./src/sudoku.config.js"></script>
     <script defer src="./src/visualizer.js"></script>
     <script defer src="./src/algorithm.js"></script>
     <script defer src="./src/sudoku-boards.js"></script>
@@ -14,7 +15,7 @@
 
 <body class="font-montserrat flex justify-around items-center">
 
-    <div class="w-[450px] lg:w-[925px] transition-all duration-500">
+    <div class="w-[450px] lg:w-[925px] my-8 lg:my-0 transition-all duration-500">
         <h1 class="text-4xl font-semibold text-primary mb-10 self-start">Sudoku Solver Visualizer</h1>
 
         <!-- Header section -->
@@ -104,14 +105,14 @@
             <h2 class="text-primary text-xl font-semibold">Controls:</h2>
             <ul class="text-secondary text-lg mt-2 lg:px-8">
                 <li>
-                    Use your mouse to select the a cell, then use the built-in number pad or the number pad on your
+                    Use your mouse to select a cell, then use the built-in number pad or the number pad on your
                     keyboard
                     <span class="text-primary font-medium">
                         ("1", "2", "3"..., "9")
-                    </span>.
+                    </span> to Insert a number.
                 </li>
                 <li>
-                    Use the backspace button or
+                    Use backspace button on the screen or
                     <span class="text-primary font-medium">
                         "0"
                     </span> on your keyboard to delete a cell.
@@ -124,20 +125,27 @@
                     <span class="text-primary font-medium">
                         "Reset"
                     </span>
-                    button clear the board for a new game.
+                    button clears the board for a new game.
                 </li>
                 <li>
                     <span class="text-primary font-medium">
-                        Solve
+                        "Solve"
                     </span> button will run a backtrack algorithm that will solve the current board.
                 </li>
                 <li>
+                    By pressing
                     <span class="text-primary font-medium">
-                        ("x1", "x2", "x3")
-                    </span> by selecting one of them you can control the visualization speed
-                    default:
+                        "Visualize"
+                    </span> button you can visualize the steps that the algorithm takes to solve the board.
+                </li>
+                <li>
+                    The
                     <span class="text-primary font-medium">
-                        "x1"
+                        "Slider"
+                    </span> above control the speed of the visualization, you can change the value of it and it will
+                    take effect in real time. default:
+                    <span class="text-primary font-medium">
+                        1 Step every 100 milliseconds.
                     </span>.
                 </li>
             </ul>

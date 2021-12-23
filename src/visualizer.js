@@ -28,7 +28,7 @@ const drawVisualization = async (board, x, y, gridX, gridY) => {
     })
 }
 
-const visualize = async () => {
+const visualize = async (game) => {
     // this function make sure that when we visualize the user cannot interrupt
     //      the process, and also get us back to the main loop once we're finished. 
     game.visualizing = true

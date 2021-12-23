@@ -11,19 +11,8 @@ const timer = document.getElementById('timer')
 const icon1 = document.getElementById('i-1')
 const icon2 = document.getElementById('i-2')
 
-const cellSize = 50
 canvas.width = cellSize * 9
 canvas.height = cellSize * 9
-
-const colors = {
-    '': '#45576E',
-    'error': '#E55C6C',
-    'success': '#0072E3',
-    'bg': '#FFFFFF',
-    'sel-pri': '#BBDEFB',
-    'sel-sec': '#E2EBF3',
-    'sel-err': '#F7CFD6',
-}
 
 // ##############################################
 // ### > Generale Functions < ###################
@@ -337,9 +326,8 @@ dropDown.addEventListener('input', () => {
 btns.addEventListener('click', event => {
     if (event.target !== event.currentTarget) {
         if (event.target.id === 'solve') backtrack(game.board)
-        if (event.target.id === 'visualize') visualize(game)
+        if (event.target.id === 'visualize') visualize()
         if (event.target.id === 'reset') reset()
-
         keyDown(event.target.dataset.number, game)
     }
 })
