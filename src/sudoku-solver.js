@@ -21,6 +21,21 @@ const colors = {
     'sel-err': '#F7CFD6',
 }
 
+const disableNumbersButtons = () => {
+    for (let button of btns.querySelectorAll('button')) {
+        if (button.id !== 'reset') {
+            button.disabled = true
+        }
+    }
+}
+const enableNumbersButtons = () => {
+    for (let button of btns.querySelectorAll('button')) {
+        if (button.id !== 'reset') {
+            button.disabled = false
+        }
+    }
+}
+
 const calculateIndex = pos => {
     const canvasPos = event.target.getBoundingClientRect();
     const correctedX = pos[0] - canvasPos.x
@@ -45,7 +60,7 @@ const convertBoard = board => {
     })
 }
 
-const toggleTimer = (game, event) => {
+const toggleTimer = event => {
     game.timerIsPaused = !game.timerIsPaused
     const playIcon = event.currentTarget.querySelector('.play-icon')
     const pauseIcon = event.currentTarget.querySelector('.pause-icon')
@@ -66,14 +81,14 @@ const clearCanvas = () => {
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 }
 
-const select = (event, game) => {
+const select = event => {
     if (game.cell) game.cell = null
     const [x, y] = calculateIndex([event.clientX, event.clientY])
     if (x >= 9 || y >= 9) return
     game.cell = [x, y]
 }
 
-const keyDown = (event, game) => {
+const keyDown = event => {
     if (!game.cell) return
     const value = event instanceof Object ? event.key : event
     if (isNaN(value)) return
@@ -106,11 +121,26 @@ const keyDown = (event, game) => {
     }
 }
 
-const reset = game => {
-    let r = Math.random() * 3 | 0
-    game.originalBoard = boards[dropDown.value][r]
-    game.board = convertBoard(boards[dropDown.value][r])
-    game.time = 0
+const reset = () => {
+    game = {
+        originalBoard: game.originalBoard,
+        board: convertBoard(game.originalBoard),
+        cell: null,
+        over: false,
+        time: 0,
+        timerIsPaused: false,
+        difficulty: dropDown.value,
+        visualizing: false,
+        steps: [],
+        speed: 100,
+        record: true,
+    }
+}
+
+const selectBoard = () => {
+    const r = Math.random() * 3 | 0
+    game.originalBoard = copy2dArray(boards[dropDown.value][r])
+    game.board = convertBoard(game.originalBoard)
 }
 
 const drawSameNumberSelection = (board, x, y, j, i) => {
@@ -192,7 +222,7 @@ const drawNumbers = (board, j, i, _color) => {
     ctx.fillText(text, posX, posY)
 }
 
-const draw = game => {
+const draw = () => {
     clearCanvas()
     updateTimer(game.time)
     if (game.cell) {
@@ -216,7 +246,7 @@ const draw = game => {
     }
 }
 
-const game = {
+var game = {
     originalBoard: null,
     board: null,
     cell: null,
@@ -224,7 +254,10 @@ const game = {
     time: 0,
     timerIsPaused: false,
     difficulty: dropDown.value,
-    visualizing: false
+    visualizing: false,
+    steps: [],
+    speed: 0,
+    record: true,
 }
 
 let lastTime = 0
@@ -247,20 +280,25 @@ const update = (time = 0) => {
 canvas.addEventListener('click', event => select(event, game))
 document.addEventListener('keydown', event => keyDown(event, game))
 stopTimer.addEventListener('click', event => toggleTimer(game, event))
-dropDown.addEventListener('input', () => reset(game))
+dropDown.addEventListener('input', () => selectBoard())
 btns.addEventListener('click', event => {
     if (event.target !== event.currentTarget) {
-        if (event.target.id === 'solve') {
-            game.visualizing = true
-            yy()
+        if (event.target.id === 'solve') visualize(game)
+        if (event.target.id === 'reset') {
+            reset()
         }
-        if (event.target.id === 'reset') reset(game)
         keyDown(event.target.dataset.number, game)
     }
 })
 
-ctx.font = `${cellSize}px montserrat`
-ctx.textAlign = 'center'
-ctx.textBaseline = 'middle'
-reset(game)
-requestAnimationFrame(update)
+const init = () => {
+    ctx.font = `${cellSize}px montserrat`
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+
+    game.originalBoard = easy[0]
+    game.board = convertBoard(game.originalBoard)
+    requestAnimationFrame(update)
+}
+
+init()
