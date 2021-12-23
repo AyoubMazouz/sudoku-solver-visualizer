@@ -33,6 +33,8 @@ const isValidNumber = (pos, board, number) => {
     return true
 }
 
+
+const steps = []
 function solve(board) {
     const pos = getValidPosition(board)
 
@@ -43,6 +45,8 @@ function solve(board) {
     for (let n = 0; n < 10; n++) {
         if (isValidNumber(pos, board, n)) {
             board[y][x].value = n
+
+            steps.push([copy2dArray(board), pos])
 
             if (solve(board)) return true
 

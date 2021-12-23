@@ -136,7 +136,6 @@ const drawHorizontalVerticalSelection = (board, x, y, i) => {
             ctx.fillRect(x * cellSize, i * cellSize, cellSize, cellSize)
         }
     }
-
 }
 
 const drawSubGridSelection = (board, x, y, gridX, gridY, j, i) => {
@@ -185,11 +184,8 @@ const drawCellBorder = (i) => {
     ctx.stroke()
 }
 
-const drawNumbers = (board, j, i) => {
-    ctx.font = `${cellSize}px montserrat`
-    ctx.textAlign = 'center'
-    ctx.textBaseline = 'middle'
-    ctx.fillStyle = colors[board[i][j].stat]
+const drawNumbers = (board, j, i, _color) => {
+    ctx.fillStyle = _color ? _color : colors[board[i][j].stat]
     const posX = (cellSize / 2) + (j * cellSize)
     const posY = (cellSize / 2) + (i * cellSize)
     const text = board[i][j].value > 0 ? board[i][j].value : ''
@@ -227,7 +223,8 @@ const game = {
     over: false,
     time: 0,
     timerIsPaused: false,
-    difficulty: dropDown.value
+    difficulty: dropDown.value,
+    visualizing: false
 }
 
 let lastTime = 0
@@ -241,7 +238,9 @@ const update = (time = 0) => {
     }
 
     draw(game)
-    window.requestAnimationFrame(update)
+    if (!game.visualizing) {
+        requestAnimationFrame(update)
+    }
 }
 
 
@@ -251,12 +250,17 @@ stopTimer.addEventListener('click', event => toggleTimer(game, event))
 dropDown.addEventListener('input', () => reset(game))
 btns.addEventListener('click', event => {
     if (event.target !== event.currentTarget) {
-        if (event.target.id === 'solve') solve(game.board)
+        if (event.target.id === 'solve') {
+            game.visualizing = true
+            yy()
+        }
         if (event.target.id === 'reset') reset(game)
         keyDown(event.target.dataset.number, game)
     }
 })
 
-
+ctx.font = `${cellSize}px montserrat`
+ctx.textAlign = 'center'
+ctx.textBaseline = 'middle'
 reset(game)
-window.requestAnimationFrame(update)
+requestAnimationFrame(update)
