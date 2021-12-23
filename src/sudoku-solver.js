@@ -4,6 +4,7 @@ const ctx = canvas.getContext('2d')
 const btns = document.getElementById('btns')
 const dropDown = document.getElementById('drop-down')
 const stopTimer = document.getElementById('stop-timer')
+const speedSlider = document.getElementById('speed-slider')
 const timer = document.getElementById('timer')
 const icon1 = document.getElementById('i-1')
 const icon2 = document.getElementById('i-2')
@@ -256,7 +257,6 @@ var game = {
     difficulty: dropDown.value,
     visualizing: false,
     steps: [],
-    speed: 0,
     record: true,
 }
 

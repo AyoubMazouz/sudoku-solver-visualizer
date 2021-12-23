@@ -18,7 +18,7 @@ const drawVisualization = async (board, x, y, gridX, gridY) => {
                 drawCellBorder(i)
                 drawSubGridBorder(i)
             }
-        }, game.speed)
+        }, speedSlider.value)
     })
 }
 
