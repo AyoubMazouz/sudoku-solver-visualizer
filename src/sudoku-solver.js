@@ -5,6 +5,7 @@ const btns = document.getElementById('btns')
 const dropDown = document.getElementById('drop-down')
 const stopTimer = document.getElementById('stop-timer')
 const speedSlider = document.getElementById('speed-slider')
+const speedLabel = document.getElementById('speed-label')
 const timer = document.getElementById('timer')
 const icon1 = document.getElementById('i-1')
 const icon2 = document.getElementById('i-2')
@@ -76,6 +77,10 @@ const updateTimer = time => {
     timer.innerText = `${min}:${sec}`
 }
 
+const updateSpeedLabel = value => {
+    speedLabel.innerText = `x${value / 1000}s / Step`
+}
+
 const clearCanvas = () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
     ctx.fillStyle = colors['bg']
@@ -133,8 +138,6 @@ const reset = () => {
         difficulty: dropDown.value,
         visualizing: false,
         steps: [],
-        speed: 100,
-        record: true,
     }
 }
 
@@ -226,6 +229,7 @@ const drawNumbers = (board, j, i, _color) => {
 const draw = () => {
     clearCanvas()
     updateTimer(game.time)
+    updateSpeedLabel(speedSlider.value)
     if (game.cell) {
         const [x, y] = game.cell
         const [gridX, gridY] = [(x / 3 | 0) * 3, (y / 3 | 0) * 3]
@@ -257,7 +261,6 @@ var game = {
     difficulty: dropDown.value,
     visualizing: false,
     steps: [],
-    record: true,
 }
 
 let lastTime = 0
@@ -301,4 +304,4 @@ const init = () => {
     requestAnimationFrame(update)
 }
 
-init()()
+init()

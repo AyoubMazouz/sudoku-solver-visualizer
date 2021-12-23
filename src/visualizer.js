@@ -5,6 +5,7 @@ const drawVisualization = async (board, x, y, gridX, gridY) => {
         setTimeout(() => {
             resolve()
             clearCanvas()
+            updateSpeedLabel(speedSlider.value)
             for (let i = 0; i < board.length; i++) {
                 drawHorizontalVerticalSelection(board, x, y, i)
             }
@@ -27,10 +28,17 @@ const visualize = async () => {
     disableNumbersButtons()
     backtrack(convertBoard(game.originalBoard))
     for (const step of game.steps) {
-        const [board, pos] = step
-        const [x, y] = pos
-        const [gridX, gridY] = [(x / 3 | 0) * 3, (y / 3 | 0) * 3]
-        await drawVisualization(board, x, y, gridX, gridY)
+        if (game.visualizing) {
+            const [board, pos] = step
+            const [x, y] = pos
+            const [gridX, gridY] = [(x / 3 | 0) * 3, (y / 3 | 0) * 3]
+            await drawVisualization(board, x, y, gridX, gridY)
+        } else {
+            reset()
+            enableNumbersButtons()
+            requestAnimationFrame(update)
+            return
+        }
     }
     game.visualizing = false
     game.board = game.steps[game.steps.length - 1][0]
