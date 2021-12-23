@@ -6,6 +6,7 @@ const dropDown = document.getElementById('drop-down')
 const stopTimer = document.getElementById('stop-timer')
 const speedSlider = document.getElementById('speed-slider')
 const speedLabel = document.getElementById('speed-label')
+const stepsLabel = document.getElementById('step-counter')
 const timer = document.getElementById('timer')
 const icon1 = document.getElementById('i-1')
 const icon2 = document.getElementById('i-2')
@@ -13,7 +14,6 @@ const icon2 = document.getElementById('i-2')
 const cellSize = 50
 canvas.width = cellSize * 9
 canvas.height = cellSize * 9
-
 
 const colors = {
     '': '#45576E',
@@ -25,22 +25,14 @@ const colors = {
     'sel-err': '#F7CFD6',
 }
 
-const disableNumbersButtons = () => {
-    for (let button of btns.querySelectorAll('button')) {
-        if (button.id !== 'reset') {
-            button.disabled = true
-        }
-    }
-}
-const enableNumbersButtons = () => {
-    for (let button of btns.querySelectorAll('button')) {
-        if (button.id !== 'reset') {
-            button.disabled = false
-        }
-    }
-}
+// ##############################################
+// ### > Generale Functions < ###################
+// ##############################################
+const getMousePos = event => [event.clientX, event.clientY]
+const copy2dArray = arr => JSON.parse(JSON.stringify(arr))
 
 const calculateIndex = pos => {
+    // Convert mouse position to indexes to be used to access values in the board 
     const canvasPos = event.target.getBoundingClientRect();
     const correctedX = pos[0] - canvasPos.x
     const correctedY = pos[1] - canvasPos.y
@@ -49,11 +41,8 @@ const calculateIndex = pos => {
     return [x, y]
 }
 
-const getMousePos = event => [event.clientX, event.clientY]
-
-const copy2dArray = arr => JSON.parse(JSON.stringify(arr))
-
 const convertBoard = board => {
+    // if the board contain number covert all number to object and add the value in object.value
     return board.map(row => {
         return row.map(v => {
             if (isNaN(v)) return v.value
@@ -62,69 +51,6 @@ const convertBoard = board => {
             }
         })
     })
-}
-
-const toggleTimer = () => {
-    game.timerIsPaused = !game.timerIsPaused
-    icon1.classList.toggle('hidden')
-    icon2.classList.toggle('hidden')
-}
-
-const updateTimer = time => {
-    const t = new Date(time)
-    let min = t.getMinutes() <= 9 ? `0${t.getMinutes()}` : `${t.getMinutes()}`
-    let sec = t.getSeconds() <= 9 ? `0${t.getSeconds()}` : `${t.getSeconds()}`
-    timer.innerText = `${min}:${sec}`
-}
-
-const updateSpeedLabel = value => {
-    speedLabel.innerText = `x${value / 1000}s / Step`
-}
-
-const clearCanvas = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
-    ctx.fillStyle = colors['bg']
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-}
-
-const select = event => {
-    if (game.cell) game.cell = null
-    const [x, y] = calculateIndex([event.clientX, event.clientY])
-    if (x >= 9 || y >= 9) return
-    game.cell = [x, y]
-}
-
-const keyDown = event => {
-    if (!game.cell) return
-    const value = event instanceof Object ? event.key : event
-    if (isNaN(value)) return
-    const number = parseInt(value)
-    const [x, y] = game.cell
-    if (!game.board[y][x].canChange) return
-
-
-    if (number === 0) {
-        game.board[y][x].stat = ''
-        game.board[y][x].value = number
-        return
-    }
-
-    if (isValidNumber([x, y], game.board, number)) {
-        game.board[y][x].stat = 'success'
-    } else {
-        game.board[y][x].stat = 'error'
-    }
-    game.board[y][x].value = number
-
-    if (getValidPosition(game.board) === false) {
-        for (let row of game.board) {
-            for (let cell of row) {
-                if (cell.stat === 'error') return
-                if (cell.value === 0) return
-            }
-        }
-        game.over = true
-    }
 }
 
 const reset = () => {
@@ -142,9 +68,112 @@ const reset = () => {
 }
 
 const selectBoard = () => {
+    // From the drop down, the user can select difficulty level then we get
+    //      a random board according to the specified level of difficulty.
     const r = Math.random() * 3 | 0
     game.originalBoard = copy2dArray(boards[dropDown.value][r])
     game.board = convertBoard(game.originalBoard)
+}
+
+// ##############################################
+// ### > DOM Elements Functions < ###############
+// ##############################################
+const updateSpeedLabel = v => speedLabel.innerText = v / 1000 === 0 ? 0.001 : v / 1000
+const updateStepsLabel = (v, t) => stepsLabel.innerText = `${v}/${t}`
+
+const toggleTimer = () => {
+    game.timerIsPaused = !game.timerIsPaused
+    icon1.classList.toggle('hidden')
+    icon2.classList.toggle('hidden')
+}
+
+const disableNumbersButtons = () => {
+    for (let button of btns.querySelectorAll('button')) {
+        if (button.id !== 'reset') {
+            button.disabled = true
+        }
+    }
+}
+
+const enableNumbersButtons = () => {
+    for (let button of btns.querySelectorAll('button')) {
+        if (button.id !== 'reset') {
+            button.disabled = false
+        }
+    }
+}
+
+const updateTimer = time => {
+    const t = new Date(time)
+    // Make sure we always have a leading "0" unless we already have it.
+    let min = t.getMinutes() <= 9 ? `0${t.getMinutes()}` : `${t.getMinutes()}`
+    let sec = t.getSeconds() <= 9 ? `0${t.getSeconds()}` : `${t.getSeconds()}`
+    timer.innerText = `${min}:${sec}`
+}
+
+// ##############################################
+// ### > Input functions < ######################
+// ##############################################
+const select = event => {
+    // This function give us the correct cell which the user click.
+    if (game.cell) game.cell = null
+    const [x, y] = calculateIndex([event.clientX, event.clientY])
+    if (x >= 9 || y >= 9) return
+    game.cell = [x, y]
+}
+
+const keyDown = event => {
+    // This function is called when the user press on the keyboard.
+
+    // If the user didn't select a cell we break out of the function.
+    if (!game.cell) return
+    // Check for the correct argument.
+    const value = event instanceof Object ? event.key : event
+    // Break the function if the value wasn't a number 1-9.
+    if (isNaN(value)) return
+    // Convert the value type from string to a number.
+    const number = parseInt(value)
+    const [x, y] = game.cell
+    // If the selected cell is part of the puzzle and can't be changed
+    // break out.
+    if (!game.board[y][x].canChange) return
+
+    // If the number equal "0" that mean the user wants to delete current cell value.
+    if (number === 0) {
+        game.board[y][x].stat = ''
+        game.board[y][x].value = number
+        return
+    }
+
+    // Object.stat help determine the color which this cell will be drawn with
+    if (isValidNumber([x, y], game.board, number)) {
+        game.board[y][x].stat = 'success'
+        game.steps.push(0)
+    } else {
+        game.board[y][x].stat = 'error'
+        game.steps.push(0)
+    }
+    game.board[y][x].value = number
+
+    // Now we check if the player won.
+    if (getValidPosition(game.board) === false) {
+        for (let row of game.board) {
+            for (let cell of row) {
+                if (cell.stat === 'error') return
+                if (cell.value === 0) return
+            }
+        }
+        game.over = true
+    }
+}
+
+// ##############################################
+// ### > Draw Functions < #######################
+// ##############################################
+const clearCanvas = () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    ctx.fillStyle = colors['bg']
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
 }
 
 const drawSameNumberSelection = (board, x, y, j, i) => {
@@ -227,9 +256,15 @@ const drawNumbers = (board, j, i, _color) => {
 }
 
 const draw = () => {
+    // this function has two loops to avoid overlapping.
+    // In each loop we pass in addition to arguments, "j" & "i".
+    // Functions that need one loop, is being placed in the outer loop.
+
     clearCanvas()
     updateTimer(game.time)
     updateSpeedLabel(speedSlider.value)
+    updateStepsLabel(game.steps.length, game.steps.length)
+    // If the user is currently selecting a cell draw the selections
     if (game.cell) {
         const [x, y] = game.cell
         const [gridX, gridY] = [(x / 3 | 0) * 3, (y / 3 | 0) * 3]
@@ -251,6 +286,9 @@ const draw = () => {
     }
 }
 
+// ##############################################
+// ### > Main Loop & Game Object < ##############
+// ##############################################
 var game = {
     originalBoard: null,
     board: null,
@@ -263,36 +301,17 @@ var game = {
     steps: [],
 }
 
-let lastTime = 0
-let deltaTime = 0;
+let [lastTime, deltaTime] = [0, 0]
 const update = (time = 0) => {
+    // Count the time between each frame "DeltaTime".
     deltaTime = time - lastTime
     lastTime = time
-
-    if (!game.timerIsPaused) {
-        game.time += deltaTime
-    }
-
+    // Count the time passed for the timer.
+    if (!game.timerIsPaused) game.time += deltaTime
     draw(game)
-    if (!game.visualizing) {
-        requestAnimationFrame(update)
-    }
+    // Make sure we are not visualizing currently.
+    if (!game.visualizing) requestAnimationFrame(update)
 }
-
-
-canvas.addEventListener('click', event => select(event, game))
-document.addEventListener('keydown', event => keyDown(event, game))
-stopTimer.addEventListener('click', event => toggleTimer(game, event))
-dropDown.addEventListener('input', () => selectBoard())
-btns.addEventListener('click', event => {
-    if (event.target !== event.currentTarget) {
-        if (event.target.id === 'solve') backtrack(game.board)
-        if (event.target.id === 'visualize') visualize(game)
-        if (event.target.id === 'reset') reset()
-
-        keyDown(event.target.dataset.number, game)
-    }
-})
 
 const init = () => {
     ctx.font = `${cellSize}px montserrat`
@@ -303,5 +322,24 @@ const init = () => {
     game.board = convertBoard(game.originalBoard)
     requestAnimationFrame(update)
 }
-
 init()
+
+// ##############################################
+// ### > Events < ###############################
+// ##############################################
+canvas.addEventListener('click', event => select(event, game))
+document.addEventListener('keydown', event => keyDown(event, game))
+stopTimer.addEventListener('click', event => toggleTimer(game, event))
+dropDown.addEventListener('input', () => {
+    reset()
+    selectBoard()
+})
+btns.addEventListener('click', event => {
+    if (event.target !== event.currentTarget) {
+        if (event.target.id === 'solve') backtrack(game.board)
+        if (event.target.id === 'visualize') visualize(game)
+        if (event.target.id === 'reset') reset()
+
+        keyDown(event.target.dataset.number, game)
+    }
+})

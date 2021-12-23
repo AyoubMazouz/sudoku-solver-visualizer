@@ -18,7 +18,7 @@
         <h1 class="text-4xl font-semibold text-primary mb-10 self-start">Sudoku Solver Visualizer</h1>
 
         <!-- Header section -->
-        <div class="flex justify-between items-center text-2xl text-secondary mb-2">
+        <div class="flex justify-between items-center text-xl text-secondary mb-2">
             <!-- Difficulty levels dropDown -->
             <select id="drop-down" class="cursor-pointer">
                 <option value="easy" selected>
@@ -35,6 +35,14 @@
                 </option>
             </select>
 
+            <!-- Step counter -->
+            <p>
+                Steps:
+                <span id="step-counter" class="text-primary">
+                    0/0
+                </span>
+            </p>
+            <!-- Timer -->
             <div class="flex space-x-4">
                 <!-- time label -->
                 <p id="timer">00:00</p>
@@ -46,6 +54,7 @@
                     <img src="./src/icons/icon-play.svg" id="i-2" class="h-6 w-6 hidden">
                 </button>
             </div>
+
         </div>
 
         <!-- canvas & button container -->
@@ -60,12 +69,10 @@
                 <!-- Speed Slider -->
                 <div class="col-span-3">
                     <p class="text-center text-secondary">
-                        Speed:
-                        <span id="speed-label">
-                            x 0.1
-                        </span>
+                        Speed: x<span id="speed-label" class="text-primary"></span>
+                        s/Steps
                     </p>
-                    <input type="range" id="speed-slider" min="0" max="1000" step="100" value="100" class="w-full">
+                    <input type="range" id="speed-slider" min="0" max="1000" step="50" value="100" class="w-full">
                 </div>
                 <!-- Visualize button -->
                 <button class="basic-btn" id="solve">Solve</button>

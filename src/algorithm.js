@@ -1,3 +1,8 @@
+// Resources: 
+//      https://www.programiz.com/dsa/backtracking-algorithm
+//      https://www.youtube.com/watch?v=eqUwSA0xI-s&t=17s
+//      https://medium.com/swlh/backtracking-algorithm-to-solve-sudoku-puzzle-in-javascript-732aedcf5e2
+
 const getValidPosition = board => {
     // Get the next valid position starting from top left.
     for (let y = 0; y < board.length; y++) {
