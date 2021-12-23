@@ -25,7 +25,7 @@ const drawVisualization = async (board, x, y, gridX, gridY) => {
 const visualize = async () => {
     game.visualizing = true
     disableNumbersButtons()
-    solve(convertBoard(game.originalBoard))
+    backtrack(convertBoard(game.originalBoard))
     for (const step of game.steps) {
         const [board, pos] = step
         const [x, y] = pos

@@ -5,6 +5,8 @@ const btns = document.getElementById('btns')
 const dropDown = document.getElementById('drop-down')
 const stopTimer = document.getElementById('stop-timer')
 const timer = document.getElementById('timer')
+const icon1 = document.getElementById('i-1')
+const icon2 = document.getElementById('i-2')
 
 const cellSize = 50
 canvas.width = cellSize * 9
@@ -60,10 +62,8 @@ const convertBoard = board => {
     })
 }
 
-const toggleTimer = event => {
+const toggleTimer = () => {
     game.timerIsPaused = !game.timerIsPaused
-    const icon1 = document.getElementById('i-1')
-    const icon2 = document.getElementById('i-2')
     icon1.classList.toggle('hidden')
     icon2.classList.toggle('hidden')
 }
@@ -283,10 +283,10 @@ stopTimer.addEventListener('click', event => toggleTimer(game, event))
 dropDown.addEventListener('input', () => selectBoard())
 btns.addEventListener('click', event => {
     if (event.target !== event.currentTarget) {
-        if (event.target.id === 'solve') visualize(game)
-        if (event.target.id === 'reset') {
-            reset()
-        }
+        if (event.target.id === 'solve') backtrack(game.board)
+        if (event.target.id === 'visualize') visualize(game)
+        if (event.target.id === 'reset') reset()
+
         keyDown(event.target.dataset.number, game)
     }
 })
@@ -301,4 +301,4 @@ const init = () => {
     requestAnimationFrame(update)
 }
 
-init()
+init()()

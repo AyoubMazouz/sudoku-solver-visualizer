@@ -35,7 +35,7 @@ const isValidNumber = (pos, board, number) => {
 }
 
 
-function solve(board) {
+const backtrack = board => {
     const pos = getValidPosition(board)
     if (!pos) return true
     const [x, y] = pos
@@ -45,7 +45,7 @@ function solve(board) {
             // Record steps for visualization.
             if (game.visualizing) game.steps.push([copy2dArray(board), pos])
             // Recursion.
-            if (solve(board)) return true
+            if (backtrack(board)) return true
             board[y][x].value = 0
         }
     } return false
