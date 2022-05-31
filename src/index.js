@@ -59,7 +59,8 @@ const reset = () => {
 const selectBoard = () => {
     // From the drop down, the user can select difficulty level then we get
     //      a random board according to the specified level of difficulty.
-    const r = Math.random() * 3 | 0
+    // const r = Math.random() * 3 | 0
+    const r = 0
     game.originalBoard = copy2dArray(boards[dropDown.value][r])
     game.board = convertBoard(game.originalBoard)
 }
@@ -326,7 +327,7 @@ dropDown.addEventListener('input', () => {
 btns.addEventListener('click', event => {
     if (event.target !== event.currentTarget) {
         if (event.target.id === 'solve') backtrack(game.board)
-        if (event.target.id === 'visualize') visualize()
+        if (event.target.id === 'visualize') visualize(game)
         if (event.target.id === 'reset') reset()
         keyDown(event.target.dataset.number, game)
     }
