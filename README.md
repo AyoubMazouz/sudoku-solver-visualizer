@@ -5,7 +5,7 @@
 In this App you can play sudoku as you would do normally, but in a click of button you can solve any board using **BackTrack** algorithm, or even better visualize the steps of the algorithm as it solve the board.
 
 ![](https://img.shields.io/badge/version-1.0.0-blue) 
-### Live Demo: [Sudoku Solver Visualizer]()
+### Live Demo: [Sudoku Solver Visualizer](https://sudoku-solver-visualizer.netlify.app/)
 
 https://user-images.githubusercontent.com/82726838/171255187-338c1846-d3f2-4405-b0ea-74bc3b504656.mp4
 
